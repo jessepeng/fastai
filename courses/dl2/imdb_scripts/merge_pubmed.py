@@ -4,19 +4,17 @@ Script to merge
 
 import argparse
 from pathlib import Path
-import xml.etree.ElementTree
+import xml.etree.ElementTree as ET
 import csv
 
 
 def get_texts(root):
-    for dir_ in root.iterdir():
-        for wiki_file in dir_.iterdir():
-            with open(wiki_file, encoding='utf-8') as f_in:
-                for line in f_in:
-                    article = ET.fromstring(line)
-                    document = article.find('document')
-                    text = document.attrib['text']
-                    yield text
+    for file in root.iterdir():
+        if file.suffix == ".xml":
+            article = ET.parse(file)
+            document = article.find('document')
+            text = document.attrib['text']
+            yield text
 
 
 def write_file(file_path, text_iter, num_tokens):
